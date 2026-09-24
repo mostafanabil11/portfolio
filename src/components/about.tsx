@@ -5,7 +5,6 @@ import { SectionLabel } from "./section-label";
 const facts = [
   { term: "Based in", detail: site.location },
   { term: "Focus", detail: "Full-stack product development" },
-  { term: "Currently", detail: "Building an online coaching platform" },
   { term: "Open to", detail: "Freelance projects & full-time roles" },
 ];
 
@@ -38,7 +37,7 @@ export function About() {
           </Reveal>
 
           <Reveal delay={0.1} className="mt-10">
-            <dl className="grid gap-x-[var(--col-gap)] sm:grid-cols-2">
+            <dl className="border-b border-line">
               {facts.map((fact) => (
                 <div key={fact.term} className="flex items-baseline justify-between gap-4 border-t border-line py-3.5">
                   <dt className="t-label text-faint">{fact.term}</dt>
