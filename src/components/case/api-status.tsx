@@ -7,7 +7,7 @@ type Status = "checking" | "waking" | "online" | "offline";
 
 const copy: Record<Status, string> = {
   checking: "Checking the API…",
-  waking: "Waking the API. Free hosting sleeps when idle; this can take ~40s",
+  waking: "Waking the demo API; this can take up to 40 seconds",
   online: "API online",
   offline: "API not responding right now",
 };

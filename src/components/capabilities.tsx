@@ -5,7 +5,7 @@ const groups = [
   { name: "Frontend", items: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Responsive UI", "Animation"] },
   { name: "Backend", items: ["Node.js", "NestJS", "Express", "REST APIs", "Authentication", "MongoDB"] },
   { name: "Commerce", items: ["Shopify", "Liquid", "E-commerce", "Online ordering", "Admin dashboards"] },
-  { name: "Tools & deployment", items: ["Git", "GitHub", "Vercel", "Render", "MongoDB Atlas"] },
+  { name: "Tools & libraries", items: ["Git", "GitHub", "TanStack Query", "Zod", "Swagger"] },
 ];
 
 export function Capabilities() {
@@ -22,7 +22,7 @@ export function Capabilities() {
           />
           <Reveal delay={0.1}>
             <p className="t-body mt-5 max-w-[34ch] text-muted">
-              Fewer hand-offs, and nothing lost between design, code and deployment.
+              Fewer hand-offs, and nothing lost between design and code.
             </p>
           </Reveal>
         </div>

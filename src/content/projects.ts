@@ -77,9 +77,9 @@ export type Project = {
 
 const webFlow = (frontend: string, api: string) => [
   { label: "Browser", detail: "Customer & staff" },
-  { label: "Next.js", detail: `${frontend} · Vercel` },
-  { label: "NestJS API", detail: `${api} · Render` },
-  { label: "MongoDB", detail: "Atlas" },
+  { label: "Next.js", detail: frontend },
+  { label: "NestJS API", detail: api },
+  { label: "MongoDB", detail: "Mongoose" },
 ];
 
 export const projects: Project[] = [
@@ -92,7 +92,7 @@ export const projects: Project[] = [
     summary:
       "Memberships, class booking and an admin dashboard for a gym with several branches — in English and Arabic.",
     role: "Design & full-stack development",
-    scope: ["Interface design", "Frontend", "API & data model", "Deployment"],
+    scope: ["Interface design", "Frontend", "API & data model"],
     stack: ["Next.js", "NestJS", "MongoDB"],
     links: {
       live: "https://prime-x-dusky.vercel.app",
@@ -123,7 +123,7 @@ export const projects: Project[] = [
       { title: "Accounts", text: "Email and password with OTP verification, Google sign-in and password reset." },
     ],
     architecture: {
-      text: "A Next.js App Router frontend on Vercel talks to a NestJS API on Render, backed by MongoDB Atlas. The split is deliberate: the API runs scheduled jobs in-process, which needs a long-lived server that a serverless platform would never keep awake.",
+      text: "A Next.js App Router frontend talks to a NestJS REST API backed by MongoDB. The API also runs the gym’s scheduled jobs in-process, so there is no separate worker to keep in sync.",
       flow: webFlow("App Router", "REST"),
       services: [
         { label: "Brevo", detail: "Transactional email over HTTP" },
@@ -133,14 +133,14 @@ export const projects: Project[] = [
         { title: "No overselling, even under load", text: "A booking claims its seat with one conditional update that only succeeds while the booked count is below capacity. Two members racing for the last place can’t both win." },
         { title: "Sessions that rotate", text: "Tokens live in httpOnly cookies with per-device refresh-token rotation and reuse detection. Deactivated accounts are rejected on every rotation, not just at login." },
         { title: "Flags, not forks", text: "Online joining, class booking and member accounts are each gated separately — which is how one codebase runs today in showcase mode." },
-        { title: "Email that arrives", text: "Free Render instances block SMTP ports, so production mail goes through Brevo’s HTTP API and the active transport is logged at startup." },
+        { title: "Email that arrives", text: "Production mail goes through Brevo’s HTTP API rather than SMTP, and the active transport is logged at startup so a misconfiguration is obvious." },
       ],
     },
     stackDetail: [
       { group: "Frontend", items: ["Next.js 16", "React 19", "TypeScript", "TanStack Query", "Tailwind CSS v4", "shadcn/ui", "next-intl"] },
-      { group: "Backend", items: ["NestJS 10", "MongoDB & Mongoose", "Passport (JWT, Google)", "Zod", "Swagger", "Scheduled jobs"] },
+      { group: "Backend", items: ["NestJS 10", "Passport (JWT, Google)", "Swagger", "Scheduled jobs"] },
       { group: "Services", items: ["Brevo", "Nodemailer"] },
-      { group: "Infrastructure", items: ["Vercel", "Render", "MongoDB Atlas"] },
+      { group: "Data", items: ["MongoDB", "Mongoose", "Zod"] },
     ],
     screens: [
       { kind: "wide", figure: { src: primexMembership, alt: "PrimeX membership page with four plan cards and a term selector.", caption: "Membership plans, priced by term." } },
@@ -161,13 +161,13 @@ export const projects: Project[] = [
       },
     ],
     challenges: [
-      { title: "Cross-site cookies in production", text: "Locally the site and API share localhost. Deployed, they sit on different domains and every request becomes cross-site — Lax cookies silently stopped being sent, so login appeared to work and everything after it failed. Cookies now switch to SameSite=None; Secure in production." },
-      { title: "Images that pointed at a laptop", text: "Early data stored absolute localhost image URLs, which in production resolved to the visitor’s own machine. Images are now root-relative, and a script checks every path in the database against committed files before each deploy." },
+      { title: "Cross-site cookies in production", text: "Locally the site and API share localhost. In production, they sit on different domains and every request becomes cross-site — Lax cookies silently stopped being sent, so login appeared to work and everything after it failed. Cookies now switch to SameSite=None; Secure in production." },
+      { title: "Images that pointed at a laptop", text: "Early data stored absolute localhost image URLs, which in production resolved to the visitor’s own machine. Images are now root-relative, and a script checks every path in the database against committed files before each release." },
       { title: "Launching before everything is on", text: "The gym wanted to go live before running memberships online. Gating each capability separately let it launch with WhatsApp enquiries, without dead pages or a second codebase." },
     ],
     result: [
       "PrimeX is live as a bilingual showcase site, with the complete online join-and-book flow built and ready to switch on.",
-      "Its foundations — authentication, the admin area and the deployment setup — became the base I build new products on.",
+      "Its foundations — authentication, the admin area and the API structure — became the base I build new products on.",
     ],
   },
   {
@@ -179,7 +179,7 @@ export const projects: Project[] = [
     summary:
       "A complete online store — catalogue, cart, checkout and an admin API — seeded with a real-sized catalogue.",
     role: "Full-stack development",
-    scope: ["Frontend", "REST API", "Email", "Deployment"],
+    scope: ["Frontend", "REST API", "Email"],
     stack: ["Next.js", "NestJS", "MongoDB"],
     links: {
       live: "https://novacart-acme-4d41.vercel.app",
@@ -209,7 +209,7 @@ export const projects: Project[] = [
       { title: "Admin API", text: "Catalogue management with image upload, soft deletes with restore, audit trails and order status management." },
     ],
     architecture: {
-      text: "A Next.js 15 storefront on Vercel and a NestJS 11 API on Render with MongoDB. Redis caching is optional — the API keeps working when it isn’t there.",
+      text: "A Next.js 15 storefront and a NestJS 11 API backed by MongoDB. Redis caching is optional — the API keeps working when it isn’t there.",
       flow: webFlow("Storefront", "REST v1"),
       services: [
         { label: "Brevo", detail: "EJS email templates" },
@@ -224,9 +224,9 @@ export const projects: Project[] = [
     },
     stackDetail: [
       { group: "Frontend", items: ["Next.js 15", "React 19", "TypeScript", "Tailwind CSS v4", "shadcn/ui", "NextAuth", "React Hook Form", "Zod", "Framer Motion"] },
-      { group: "Backend", items: ["NestJS 11", "MongoDB & Mongoose", "JWT & bcrypt", "class-validator", "Multer", "ioredis", "Swagger"] },
-      { group: "Services", items: ["Brevo", "Redis"] },
-      { group: "Infrastructure", items: ["Vercel", "Render", "MongoDB"] },
+      { group: "Backend", items: ["NestJS 11", "JWT & bcrypt", "class-validator", "Multer", "Swagger"] },
+      { group: "Services", items: ["Brevo", "EJS email templates"] },
+      { group: "Data", items: ["MongoDB", "Mongoose", "Redis (ioredis)"] },
     ],
     screens: [
       { kind: "wide", figure: { src: novaProducts, alt: "NovaCart product listing with search and product cards.", caption: "The catalogue, with live search." } },
@@ -258,7 +258,7 @@ export const projects: Project[] = [
     summary:
       "Direct online ordering for a restaurant: a customisable menu, guest checkout and order tracking, in Arabic and English.",
     role: "Design & full-stack development",
-    scope: ["Interface design", "Frontend", "API & data model", "Deployment"],
+    scope: ["Interface design", "Frontend", "API & data model"],
     stack: ["Next.js", "NestJS", "MongoDB"],
     links: {
       live: "https://fire-house-wnhg.vercel.app",
@@ -289,7 +289,7 @@ export const projects: Project[] = [
       { title: "Kitchen admin", text: "Dashboard, menu and stock movements, orders, coupons, customers, reviews, settings and an audit log." },
     ],
     architecture: {
-      text: "The same split as my other commerce builds — Next.js on Vercel, NestJS on Render, MongoDB Atlas — with a scheduler in the API that releases stock held by unfinished checkouts every minute.",
+      text: "The same split as my other commerce builds — a Next.js storefront, a NestJS API and MongoDB — with a scheduler in the API that releases stock held by unfinished checkouts every minute.",
       flow: webFlow("Storefront", "REST"),
       services: [
         { label: "Brevo", detail: "Order emails" },
@@ -299,14 +299,14 @@ export const projects: Project[] = [
         { title: "The server prices the meal", text: "The browser only sends identifiers. Prices, options and availability are re-read from the database on every cart change." },
         { title: "Deterministic cart lines", text: "A SHA-256 key over dish, variant, sorted modifiers and a normalised note decides whether two additions are the same line." },
         { title: "Idempotent orders", text: "Checkout carries an idempotency key, so a double tap or a retried request returns the existing order instead of creating a second one." },
-        { title: "Stock that comes back", text: "Checkouts reserve stock; a scheduled job releases reservations that are never completed — the reason the API runs on a long-lived server." },
+        { title: "Stock that comes back", text: "Checkouts reserve stock; a scheduler inside the API releases reservations that are never completed." },
       ],
     },
     stackDetail: [
       { group: "Frontend", items: ["Next.js 16", "React 19", "TypeScript", "TanStack Query", "Zustand", "Tailwind CSS v4", "shadcn/ui", "React Hook Form"] },
-      { group: "Backend", items: ["NestJS 10", "MongoDB & Mongoose", "JWT with refresh rotation", "Zod", "Swagger", "Scheduled jobs"] },
+      { group: "Backend", items: ["NestJS 10", "JWT with refresh rotation", "Swagger", "Scheduled jobs"] },
       { group: "Services", items: ["Brevo", "Google OAuth"] },
-      { group: "Infrastructure", items: ["Vercel", "Render", "MongoDB Atlas"] },
+      { group: "Data", items: ["MongoDB", "Mongoose", "Zod"] },
     ],
     screens: [
       { kind: "wide", figure: { src: fireMenu, alt: "Fire House menu with category tabs and dish cards.", caption: "The menu — four categories, 29 dishes, searchable." } },
@@ -324,7 +324,7 @@ export const projects: Project[] = [
     challenges: [
       { title: "Customisation without chaos", text: "Letting people change everything about a dish multiplies the ways a price can go wrong. Resolving every option on the server, and validating each group’s rules there, kept the client simple and the totals exact." },
       { title: "Abandoned checkouts", text: "A customer who started checking out and walked away was holding stock hostage. Time-boxed reservations, released by a scheduled job, fixed it." },
-      { title: "Email on free hosting", text: "Render’s free tier blocks SMTP, so order emails go out through Brevo’s HTTP API in production." },
+      { title: "Email without SMTP", text: "SMTP wasn’t available in production, so order emails go out through Brevo’s HTTP API instead." },
     ],
     result: [
       "Fire House is live with its full menu, guest checkout and order tracking.",
@@ -340,7 +340,7 @@ export const projects: Project[] = [
     summary:
       "An online store for a monochrome clothing label — sizes and colours, sale pricing, customer accounts and a full admin.",
     role: "Design & full-stack development",
-    scope: ["Interface design", "Frontend", "API & data model", "Deployment"],
+    scope: ["Interface design", "Frontend", "API & data model"],
     stack: ["Next.js", "NestJS", "MongoDB"],
     links: {
       live: "https://valiant-seven.vercel.app",
@@ -371,7 +371,7 @@ export const projects: Project[] = [
       { title: "Admin", text: "Dashboard, products and stock movements, orders, customers, coupons, reviews, settings and an audit log." },
     ],
     architecture: {
-      text: "Next.js 16 on Vercel, a NestJS API on Render and MongoDB Atlas. The server validates its environment on boot and refuses to start with a broken configuration.",
+      text: "A Next.js 16 storefront, a NestJS API and MongoDB. The server validates its environment on boot and refuses to start with a broken configuration.",
       flow: webFlow("Storefront", "REST"),
       services: [
         { label: "Email", detail: "OTP & order mail" },
@@ -381,14 +381,14 @@ export const projects: Project[] = [
         { title: "Never trust the client", text: "The browser sends product and variant identifiers, never prices. Totals are always calculated on the server." },
         { title: "Reservations with expiry", text: "Checkouts hold stock until the order is confirmed or the hold expires; a scheduled job returns abandoned stock to the shelf." },
         { title: "One request, one order", text: "Every checkout carries an idempotency key. Repeating it returns the order that already exists rather than placing another." },
-        { title: "Fail at boot, not at checkout", text: "Configuration is validated on startup, so a missing setting stops the deploy instead of failing in front of a customer." },
+        { title: "Fail at boot, not at checkout", text: "Configuration is validated on startup, so a missing setting stops the server from starting instead of failing in front of a customer." },
       ],
     },
     stackDetail: [
       { group: "Frontend", items: ["Next.js 16", "React 19", "TypeScript", "TanStack Query", "Zustand", "Tailwind CSS v4", "shadcn/ui", "React Hook Form"] },
-      { group: "Backend", items: ["NestJS 10", "MongoDB & Mongoose", "JWT with refresh rotation", "Zod", "Swagger", "Scheduled jobs"] },
+      { group: "Backend", items: ["NestJS 10", "JWT with refresh rotation", "Swagger", "Scheduled jobs"] },
       { group: "Services", items: ["Nodemailer", "Google OAuth"] },
-      { group: "Infrastructure", items: ["Vercel", "Render", "MongoDB Atlas"] },
+      { group: "Data", items: ["MongoDB", "Mongoose", "Zod"] },
     ],
     screens: [
       { kind: "wide", figure: { src: valiantProduct, alt: "Valiant product page for a navy knitted polo with size options.", caption: "Product page: sizes, linked colours and a size guide." } },

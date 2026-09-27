@@ -134,9 +134,9 @@ function Challenges({ notes }: { notes: Project["challenges"] }) {
 
 function Links({ links }: { links: Project["links"] }) {
   const rows = [
-    links.live && { label: "Live website", href: links.live },
-    links.github && { label: "Source code", href: links.github },
-  ].filter((row): row is { label: string; href: string } => Boolean(row));
+    links.live && { label: "Live website", href: links.live, text: "Open the live site" },
+    links.github && { label: "Source code", href: links.github, text: links.github.replace(/^https?:\/\//, "") },
+  ].filter((row): row is { label: string; href: string; text: string } => Boolean(row));
 
   if (rows.length === 0) return <p className="t-lead max-w-[46ch] text-muted">{links.note}</p>;
 
@@ -159,7 +159,7 @@ function Links({ links }: { links: Project["links"] }) {
                 ↗
               </span>
             </span>
-            <span className="t-mono break-all text-muted">{row.href.replace(/^https?:\/\//, "")}</span>
+            <span className="t-mono break-all text-muted">{row.text}</span>
           </a>
         </li>
       ))}

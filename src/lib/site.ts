@@ -12,7 +12,7 @@ export const site = {
   year: "2026",
   url: resolveSiteUrl(),
   description:
-    "Mostafa Nabil is a full-stack developer in Egypt who designs and builds complete web products — Next.js interfaces, NestJS APIs, data models and deployment.",
+    "Mostafa Nabil is a full-stack developer in Egypt who designs and builds complete web products — Next.js interfaces, NestJS APIs and MongoDB data models.",
   email: "mostafa.nabil.arafa01@gmail.com",
   links: {
     github: "https://github.com/mostafanabil11",

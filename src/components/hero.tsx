@@ -5,7 +5,7 @@ import { RevealImage } from "./reveal-image";
 
 const facts = [
   { term: "Stack", detail: "Next.js · NestJS · MongoDB" },
-  { term: "Deployment", detail: "Vercel · Render" },
+  { term: "Bilingual", detail: "English · Arabic" },
   { term: "Commerce", detail: "Custom stores · Shopify" },
   { term: "Based in", detail: "Egypt · Open to remote" },
 ];
@@ -51,8 +51,7 @@ export function Hero() {
           </h1>
 
           <p className="fade-late t-lead mt-6 max-w-[42ch] text-muted" style={delay(450)}>
-            I design and build complete web products — the interface people use, and the APIs, data and deployment
-            behind it.
+            I design and build complete web products — the interface people use, and the APIs and data behind it.
           </p>
 
           <div className="fade-late mt-9 flex flex-wrap items-center gap-3" style={delay(600)}>
