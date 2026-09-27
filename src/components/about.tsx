@@ -27,12 +27,12 @@ export function About() {
           <Reveal className="mt-8 grid gap-5 md:grid-cols-2 md:gap-[var(--col-gap)]">
             <p className="t-body text-muted">
               Most of my projects start with an empty repository and end in production. I design the interface, build
-              it in Next.js, write the API in NestJS, model the data in MongoDB, connect the payments and ship it —
-              usually to Vercel and Render.
+              it in Next.js, write the API in NestJS, model the data in MongoDB and ship it — usually to Vercel and
+              Render.
             </p>
             <p className="t-body text-muted">
               Doing all of it is how I keep both halves honest: a layout that feels calm on a phone, and an order that
-              can never be charged twice. I&apos;d rather get fewer things exactly right than ship more that almost work.
+              can never be placed twice. I&apos;d rather get fewer things exactly right than ship more that almost work.
             </p>
           </Reveal>
 

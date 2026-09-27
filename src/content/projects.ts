@@ -92,7 +92,7 @@ export const projects: Project[] = [
     summary:
       "Memberships, class booking and an admin dashboard for a gym with several branches — in English and Arabic.",
     role: "Design & full-stack development",
-    scope: ["Interface design", "Frontend", "API & data model", "Payments", "Deployment"],
+    scope: ["Interface design", "Frontend", "API & data model", "Deployment"],
     stack: ["Next.js", "NestJS", "MongoDB"],
     links: {
       live: "https://prime-x-dusky.vercel.app",
@@ -107,18 +107,18 @@ export const projects: Project[] = [
       "The whole product works in English and Arabic — with a genuinely right-to-left layout, not a translated left-to-right one.",
     ],
     problem: [
-      "A gym’s offer is more complicated than a price list. Plans differ by branch access, class credits, freeze days and guest passes; classes have a fixed number of places; and a lot of the business still happens at the front desk, in cash, over WhatsApp.",
+      "A gym’s offer is more complicated than a price list. Plans differ by branch access, class credits, freeze days and guest passes; classes have a fixed number of places; and a lot of the business still happens at the front desk and over WhatsApp.",
       "The site had to sell memberships clearly without pretending the gym is an online-only business — and staff needed one place to see a member’s entire history.",
     ],
     solution: [
       "I modelled the gym the way it actually operates — branches, plans, trainers, class types and recurring weekly schedules — and built every page on top of that model instead of around static content.",
-      "The join flow takes card payments through Paymob or records cash paid at the desk. Each member-facing capability sits behind its own feature flag on both frontend and backend, so the gym could launch as a showcase that routes enquiries to WhatsApp, with online sales and booking ready to switch on without a rebuild.",
+      "Each member-facing capability — joining online, class booking and member accounts — sits behind its own feature flag on both frontend and backend, so the gym could launch as a showcase that routes enquiries to WhatsApp, with the full join-and-book flow ready to switch on without a rebuild.",
     ],
     features: [
-      { title: "Plans & join funnel", text: "Class-credit or unlimited plans, single- or all-branch tiers, freeze days and guest passes. Pay by card, or in cash at the desk." },
+      { title: "Plans & join funnel", text: "Class-credit or unlimited plans, single- or all-branch tiers, freeze days and guest passes, with a guided join flow from plan to account." },
       { title: "Timetable & booking", text: "Sessions generated from weekly rules. Booking can never exceed capacity, and credits come back when a class is cancelled." },
-      { title: "Member account", text: "Membership status, upcoming and past classes, payment history, profile and notification settings." },
-      { title: "Admin dashboard", text: "KPIs, branches, plans, trainers and schedules; members with their full history; cash payments, content editing, an enquiry inbox and an audit log." },
+      { title: "Member account", text: "Membership status, upcoming and past classes, profile and notification settings." },
+      { title: "Admin dashboard", text: "KPIs, branches, plans, trainers and schedules; members with their full history; content editing, an enquiry inbox and an audit log." },
       { title: "English & Arabic", text: "Two languages with a right-to-left layout designed for Arabic, not mirrored as an afterthought." },
       { title: "Accounts", text: "Email and password with OTP verification, Google sign-in and password reset." },
     ],
@@ -126,21 +126,20 @@ export const projects: Project[] = [
       text: "A Next.js App Router frontend on Vercel talks to a NestJS API on Render, backed by MongoDB Atlas. The split is deliberate: the API runs scheduled jobs in-process, which needs a long-lived server that a serverless platform would never keep awake.",
       flow: webFlow("App Router", "REST"),
       services: [
-        { label: "Paymob", detail: "Card payments, HMAC-verified callbacks" },
         { label: "Brevo", detail: "Transactional email over HTTP" },
         { label: "Google", detail: "OAuth sign-in" },
       ],
       decisions: [
         { title: "No overselling, even under load", text: "A booking claims its seat with one conditional update that only succeeds while the booked count is below capacity. Two members racing for the last place can’t both win." },
         { title: "Sessions that rotate", text: "Tokens live in httpOnly cookies with per-device refresh-token rotation and reuse detection. Deactivated accounts are rejected on every rotation, not just at login." },
-        { title: "Flags, not forks", text: "Membership sales, class booking and member accounts are each gated separately — which is how one codebase runs today in showcase mode." },
+        { title: "Flags, not forks", text: "Online joining, class booking and member accounts are each gated separately — which is how one codebase runs today in showcase mode." },
         { title: "Email that arrives", text: "Free Render instances block SMTP ports, so production mail goes through Brevo’s HTTP API and the active transport is logged at startup." },
       ],
     },
     stackDetail: [
       { group: "Frontend", items: ["Next.js 16", "React 19", "TypeScript", "TanStack Query", "Tailwind CSS v4", "shadcn/ui", "next-intl"] },
       { group: "Backend", items: ["NestJS 10", "MongoDB & Mongoose", "Passport (JWT, Google)", "Zod", "Swagger", "Scheduled jobs"] },
-      { group: "Services", items: ["Paymob", "Brevo", "Nodemailer"] },
+      { group: "Services", items: ["Brevo", "Nodemailer"] },
       { group: "Infrastructure", items: ["Vercel", "Render", "MongoDB Atlas"] },
     ],
     screens: [
@@ -164,11 +163,11 @@ export const projects: Project[] = [
     challenges: [
       { title: "Cross-site cookies in production", text: "Locally the site and API share localhost. Deployed, they sit on different domains and every request becomes cross-site — Lax cookies silently stopped being sent, so login appeared to work and everything after it failed. Cookies now switch to SameSite=None; Secure in production." },
       { title: "Images that pointed at a laptop", text: "Early data stored absolute localhost image URLs, which in production resolved to the visitor’s own machine. Images are now root-relative, and a script checks every path in the database against committed files before each deploy." },
-      { title: "Selling before selling", text: "The gym wasn’t ready to take payments online on day one. Gating each capability separately let it launch with WhatsApp enquiries, without dead pages or a second codebase." },
+      { title: "Launching before everything is on", text: "The gym wanted to go live before running memberships online. Gating each capability separately let it launch with WhatsApp enquiries, without dead pages or a second codebase." },
     ],
     result: [
       "PrimeX is live as a bilingual showcase site, with the complete online join-and-book flow built and ready to switch on.",
-      "Its foundations — authentication, payments, the admin area and the deployment setup — became the base I build new products on.",
+      "Its foundations — authentication, the admin area and the deployment setup — became the base I build new products on.",
     ],
   },
   {
@@ -178,10 +177,10 @@ export const projects: Project[] = [
     kind: "Full-stack e-commerce",
     year: "2026",
     summary:
-      "A complete online store — catalogue, cart, Stripe checkout and an admin API — seeded with a real-sized catalogue.",
+      "A complete online store — catalogue, cart, checkout and an admin API — seeded with a real-sized catalogue.",
     role: "Full-stack development",
-    scope: ["Frontend", "REST API", "Payments", "Email", "Deployment"],
-    stack: ["Next.js", "NestJS", "Stripe"],
+    scope: ["Frontend", "REST API", "Email", "Deployment"],
+    stack: ["Next.js", "NestJS", "MongoDB"],
     links: {
       live: "https://novacart-acme-4d41.vercel.app",
       github: "https://github.com/mostafanabil11/E-commerce",
@@ -195,31 +194,29 @@ export const projects: Project[] = [
       "It ships with a seed dataset — 56 products across 10 categories, 60 subcategories and 54 brands, with 332 reviews — so a fresh clone is a fully stocked shop rather than an empty template.",
     ],
     problem: [
-      "Most portfolio stores stop at the product grid. The hard parts of commerce live elsewhere: prices the client can’t tamper with, stock that stays correct, payments confirmed by the provider instead of the browser, and accounts and emails that behave like a real shop’s.",
+      "Most portfolio stores stop at the product grid. The hard parts of commerce live elsewhere: prices the client can’t tamper with, stock that stays correct, catalogue data that can’t be lost by accident, and accounts and emails that behave like a real shop’s.",
     ],
     solution: [
-      "The API owns every number that matters. Carts are priced on the server with stock checks and coupons; orders reserve inventory when they’re placed and count a sale only once payment settles.",
-      "Checkout hands off to Stripe, and the order is confirmed by a signature-verified webhook — idempotently, so a replayed event changes nothing.",
+      "The API owns every number that matters. Carts are priced on the server with stock checks and coupons, and orders reserve inventory the moment they’re placed.",
+      "Around that core sit the parts a real shop needs: catalogue records that are soft-deleted with an audit trail, ratings kept current on every review, and an optional Redis cache the API can run without.",
     ],
     features: [
       { title: "Catalogue", text: "Live search, category and brand filters, sorting by price, rating, newest and best-selling, with pagination." },
       { title: "Product pages", text: "Image galleries with thumbnails, ratings and related products." },
       { title: "Cart & wishlist", text: "Server-calculated totals, stock checks and coupon support." },
-      { title: "Checkout", text: "Validated shipping details, then Stripe Checkout. Paymob is integrated on the API as well." },
+      { title: "Checkout", text: "Validated delivery details and order totals calculated by the server." },
       { title: "Accounts", text: "Sign-up, email verification that never blocks sign-in, and a three-step password reset." },
-      { title: "Admin API", text: "Catalogue management with image upload, soft deletes with restore, audit trails, order status and refunds." },
+      { title: "Admin API", text: "Catalogue management with image upload, soft deletes with restore, audit trails and order status management." },
     ],
     architecture: {
       text: "A Next.js 15 storefront on Vercel and a NestJS 11 API on Render with MongoDB. Redis caching is optional — the API keeps working when it isn’t there.",
       flow: webFlow("Storefront", "REST v1"),
       services: [
-        { label: "Stripe", detail: "Checkout + signed webhooks" },
-        { label: "Paymob", detail: "HMAC-SHA512 callbacks" },
         { label: "Brevo", detail: "EJS email templates" },
         { label: "Redis", detail: "Optional cache" },
       ],
       decisions: [
-        { title: "Webhooks are the source of truth", text: "Stripe events are verified against the raw request body and Paymob callbacks with HMAC-SHA512 before anything changes. Settlement is idempotent." },
+        { title: "Totals the browser can’t touch", text: "Carts are priced on the server against current prices, stock and coupons, so nothing the client sends can change what an order costs." },
         { title: "Ratings stored, not computed", text: "Each product keeps its average rating and review count, recalculated on every review write, so listing pages never aggregate on read." },
         { title: "Nothing is really deleted", text: "Catalogue records are soft-deleted, can be restored, and keep a trail of who created, changed or removed them." },
         { title: "A cache that can disappear", text: "Redis speeds up hot reads when it’s available; when it isn’t, requests fall through to MongoDB instead of failing." },
@@ -228,7 +225,7 @@ export const projects: Project[] = [
     stackDetail: [
       { group: "Frontend", items: ["Next.js 15", "React 19", "TypeScript", "Tailwind CSS v4", "shadcn/ui", "NextAuth", "React Hook Form", "Zod", "Framer Motion"] },
       { group: "Backend", items: ["NestJS 11", "MongoDB & Mongoose", "JWT & bcrypt", "class-validator", "Multer", "ioredis", "Swagger"] },
-      { group: "Services", items: ["Stripe", "Paymob", "Brevo"] },
+      { group: "Services", items: ["Brevo", "Redis"] },
       { group: "Infrastructure", items: ["Vercel", "Render", "MongoDB"] },
     ],
     screens: [
@@ -244,12 +241,12 @@ export const projects: Project[] = [
       },
     ],
     challenges: [
-      { title: "Trusting the right party", text: "A successful redirect back from Stripe proves nothing. Orders become paid only when a verified webhook says so, and duplicate deliveries are ignored." },
+      { title: "Stock you can believe", text: "Inventory is reserved as soon as an order is placed, not later, so the stock a shopper sees is stock that’s actually available." },
       { title: "Verification without friction", text: "A code is emailed at sign-up, but the account is usable immediately; a dismissible banner nudges instead of a wall that loses customers." },
       { title: "A store you can reproduce", text: "A versioned catalogue snapshot with local imagery rebuilds the whole shop from one command — the difference between a demo and a working product." },
     ],
     result: [
-      "NovaCart works end to end: browse, add to cart, pay with Stripe in test mode and receive a confirmed order — with Swagger documentation for every endpoint.",
+      "NovaCart works end to end: browse, search, add to cart and place an order — with Swagger documentation for every endpoint.",
     ],
   },
   {
@@ -259,10 +256,10 @@ export const projects: Project[] = [
     kind: "Restaurant ordering",
     year: "2026",
     summary:
-      "Direct online ordering for a restaurant: a customisable menu, guest checkout, card or cash on delivery, and order tracking.",
+      "Direct online ordering for a restaurant: a customisable menu, guest checkout and order tracking, in Arabic and English.",
     role: "Design & full-stack development",
-    scope: ["Interface design", "Frontend", "API & data model", "Payments", "Deployment"],
-    stack: ["Next.js", "NestJS", "Paymob"],
+    scope: ["Interface design", "Frontend", "API & data model", "Deployment"],
+    stack: ["Next.js", "NestJS", "MongoDB"],
     links: {
       live: "https://fire-house-wnhg.vercel.app",
       github: "https://github.com/mostafanabil11/fire-house",
@@ -273,7 +270,7 @@ export const projects: Project[] = [
     shotAlt: "Fire House homepage: burgers and loaded fries under the headline “Big flavour. Your way.”",
     overview: [
       "Fire House is an ordering website for a burger and fried-chicken kitchen — the kind of restaurant that gives away a share of every order to delivery apps.",
-      "Customers browse the menu, customise each dish, pay by card or cash on delivery and follow their order, without creating an account. The kitchen runs the menu, stock and orders from an admin area.",
+      "Customers browse the menu, customise each dish, place an order and follow it, without creating an account. The kitchen runs the menu, stock and orders from an admin area.",
     ],
     problem: [
       "A menu isn’t a product catalogue. The same burger can be ordered as a combo, loaded, with extra sauces or with a note for the kitchen — and every combination has its own price.",
@@ -281,21 +278,20 @@ export const projects: Project[] = [
     ],
     solution: [
       "I built menu items around variants and modifier groups — meal upgrades, add-ons and sauces — that the server resolves and prices. Each cart line is identified by a hash of the dish, its variant, its sorted options and its note, so identical meals merge and different ones stay separate.",
-      "Checkout reserves stock and creates orders idempotently. Cards go through Paymob with HMAC-verified callbacks; cash on delivery is a first-class option, not a fallback.",
+      "Checkout reserves stock and creates orders idempotently, so a double tap never becomes a second order — and guests can follow their order with nothing more than its number and their email.",
     ],
     features: [
       { title: "Customisable menu", text: "Categories, search, and dishes with variants, optional upgrades, add-ons and a note for the kitchen." },
-      { title: "Guest checkout", text: "Order without an account; sign in only for saved addresses and history." },
-      { title: "Card or cash", text: "Paymob card payments, or cash on delivery." },
+      { title: "Guest checkout", text: "Order without an account — checkout needs only delivery details." },
+      { title: "Optional accounts", text: "Sign in with email or Google for saved addresses and order history." },
       { title: "Order tracking", text: "Look up any order with its number and the email used at checkout." },
       { title: "Arabic & English", text: "A language switch across the whole storefront." },
       { title: "Kitchen admin", text: "Dashboard, menu and stock movements, orders, coupons, customers, reviews, settings and an audit log." },
     ],
     architecture: {
-      text: "The same split as my other commerce builds — Next.js on Vercel, NestJS on Render, MongoDB Atlas — with a scheduler in the API that releases stock held by abandoned card payments every minute.",
+      text: "The same split as my other commerce builds — Next.js on Vercel, NestJS on Render, MongoDB Atlas — with a scheduler in the API that releases stock held by unfinished checkouts every minute.",
       flow: webFlow("Storefront", "REST"),
       services: [
-        { label: "Paymob", detail: "Card payments, HMAC callbacks" },
         { label: "Brevo", detail: "Order emails" },
         { label: "Google", detail: "OAuth sign-in" },
       ],
@@ -303,13 +299,13 @@ export const projects: Project[] = [
         { title: "The server prices the meal", text: "The browser only sends identifiers. Prices, options and availability are re-read from the database on every cart change." },
         { title: "Deterministic cart lines", text: "A SHA-256 key over dish, variant, sorted modifiers and a normalised note decides whether two additions are the same line." },
         { title: "Idempotent orders", text: "Checkout carries an idempotency key, so a double tap or a retried request returns the existing order instead of creating a second one." },
-        { title: "Stock that comes back", text: "Card checkouts reserve stock; a scheduled job releases reservations from abandoned payments — the reason the API runs on a long-lived server." },
+        { title: "Stock that comes back", text: "Checkouts reserve stock; a scheduled job releases reservations that are never completed — the reason the API runs on a long-lived server." },
       ],
     },
     stackDetail: [
       { group: "Frontend", items: ["Next.js 16", "React 19", "TypeScript", "TanStack Query", "Zustand", "Tailwind CSS v4", "shadcn/ui", "React Hook Form"] },
-      { group: "Backend", items: ["NestJS 10", "MongoDB & Mongoose", "JWT with refresh rotation", "Google OAuth", "Zod", "Swagger", "Scheduled jobs"] },
-      { group: "Services", items: ["Paymob", "Brevo"] },
+      { group: "Backend", items: ["NestJS 10", "MongoDB & Mongoose", "JWT with refresh rotation", "Zod", "Swagger", "Scheduled jobs"] },
+      { group: "Services", items: ["Brevo", "Google OAuth"] },
       { group: "Infrastructure", items: ["Vercel", "Render", "MongoDB Atlas"] },
     ],
     screens: [
@@ -327,7 +323,7 @@ export const projects: Project[] = [
     ],
     challenges: [
       { title: "Customisation without chaos", text: "Letting people change everything about a dish multiplies the ways a price can go wrong. Resolving every option on the server, and validating each group’s rules there, kept the client simple and the totals exact." },
-      { title: "Abandoned payments", text: "A customer who opened the card form and walked away was holding stock hostage. Time-boxed reservations, released by a scheduled job, fixed it." },
+      { title: "Abandoned checkouts", text: "A customer who started checking out and walked away was holding stock hostage. Time-boxed reservations, released by a scheduled job, fixed it." },
       { title: "Email on free hosting", text: "Render’s free tier blocks SMTP, so order emails go out through Brevo’s HTTP API in production." },
     ],
     result: [
@@ -342,10 +338,10 @@ export const projects: Project[] = [
     kind: "Fashion e-commerce",
     year: "2026",
     summary:
-      "An online store for a monochrome clothing label — sizes and colours, sale pricing, card or cash checkout, and a full admin.",
+      "An online store for a monochrome clothing label — sizes and colours, sale pricing, customer accounts and a full admin.",
     role: "Design & full-stack development",
-    scope: ["Interface design", "Frontend", "API & data model", "Payments", "Deployment"],
-    stack: ["Next.js", "NestJS", "Paymob"],
+    scope: ["Interface design", "Frontend", "API & data model", "Deployment"],
+    stack: ["Next.js", "NestJS", "MongoDB"],
     links: {
       live: "https://valiant-seven.vercel.app",
       github: "https://github.com/mostafanabil11/Valiant-clothing-brand",
@@ -356,20 +352,20 @@ export const projects: Project[] = [
     shotAlt: "Valiant homepage: the wordmark above a black-and-white photo of tailored clothes on a rail.",
     overview: [
       "Valiant is an online store for a menswear and womenswear label with a quiet, monochrome identity.",
-      "It covers the whole commercial loop: a catalogue with sizes, colours and sale pricing; checkout by card or cash on delivery; order tracking; and an admin area for running the shop day to day.",
+      "It covers the whole commercial loop: a catalogue with sizes, colours and sale pricing; checkout with coupons; order tracking; and an admin area for running the shop day to day.",
     ],
     problem: [
-      "Fashion stores fail in the details — a size that’s sold out but still addable, a sale price that changes at checkout, an abandoned payment holding the last medium.",
+      "Fashion stores fail in the details — a size that’s sold out but still addable, a sale price that changes at checkout, an abandoned checkout holding the last medium.",
       "The brand also needed its restraint carried through every page, down to the size selector, not just the homepage.",
     ],
     solution: [
-      "I built a server-authoritative commerce core: the cart re-reads prices and stock on every change, checkout reserves inventory and creates orders idempotently, and Paymob payments are confirmed by HMAC-verified webhooks.",
+      "I built a server-authoritative commerce core: the cart re-reads prices and stock on every change, checkout reserves inventory and creates orders idempotently, so a retried request never becomes a second order.",
       "On top of it, the storefront keeps to the brand’s black-and-white, editorial language — type, spacing and photography doing the work colour usually does.",
     ],
     features: [
       { title: "Catalogue", text: "Men’s and women’s collections, categories and subcategories, search, filters and sale pricing." },
       { title: "Product pages", text: "Size selection, colours linked across products, and a size guide." },
-      { title: "Checkout", text: "Paymob card payments or cash on delivery, with coupons." },
+      { title: "Checkout", text: "Server-calculated totals with coupons and saved addresses." },
       { title: "Customer accounts", text: "OTP-verified sign-up, Google sign-in, saved addresses, order history and a wishlist." },
       { title: "Retention", text: "Reviews, newsletter sign-up and back-in-stock notifications." },
       { title: "Admin", text: "Dashboard, products and stock movements, orders, customers, coupons, reviews, settings and an audit log." },
@@ -378,21 +374,20 @@ export const projects: Project[] = [
       text: "Next.js 16 on Vercel, a NestJS API on Render and MongoDB Atlas. The server validates its environment on boot and refuses to start with a broken configuration.",
       flow: webFlow("Storefront", "REST"),
       services: [
-        { label: "Paymob", detail: "Card payments, HMAC callbacks" },
         { label: "Email", detail: "OTP & order mail" },
         { label: "Google", detail: "OAuth sign-in" },
       ],
       decisions: [
         { title: "Never trust the client", text: "The browser sends product and variant identifiers, never prices. Totals are always calculated on the server." },
-        { title: "Reservations with expiry", text: "Card checkouts hold stock until payment settles or the hold expires; a scheduled job returns abandoned stock to the shelf." },
-        { title: "Webhook-confirmed payments", text: "Orders are marked paid only by Paymob callbacks that pass HMAC verification." },
-        { title: "Fail at boot, not at checkout", text: "Configuration is validated on startup. Card checkout stays off until every Paymob key is present, instead of failing in front of a customer." },
+        { title: "Reservations with expiry", text: "Checkouts hold stock until the order is confirmed or the hold expires; a scheduled job returns abandoned stock to the shelf." },
+        { title: "One request, one order", text: "Every checkout carries an idempotency key. Repeating it returns the order that already exists rather than placing another." },
+        { title: "Fail at boot, not at checkout", text: "Configuration is validated on startup, so a missing setting stops the deploy instead of failing in front of a customer." },
       ],
     },
     stackDetail: [
       { group: "Frontend", items: ["Next.js 16", "React 19", "TypeScript", "TanStack Query", "Zustand", "Tailwind CSS v4", "shadcn/ui", "React Hook Form"] },
-      { group: "Backend", items: ["NestJS 10", "MongoDB & Mongoose", "JWT with refresh rotation", "Google OAuth", "Zod", "Swagger"] },
-      { group: "Services", items: ["Paymob", "Nodemailer"] },
+      { group: "Backend", items: ["NestJS 10", "MongoDB & Mongoose", "JWT with refresh rotation", "Zod", "Swagger", "Scheduled jobs"] },
+      { group: "Services", items: ["Nodemailer", "Google OAuth"] },
       { group: "Infrastructure", items: ["Vercel", "Render", "MongoDB Atlas"] },
     ],
     screens: [

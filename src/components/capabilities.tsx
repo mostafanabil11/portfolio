@@ -4,7 +4,7 @@ import { SectionLabel } from "./section-label";
 const groups = [
   { name: "Frontend", items: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Responsive UI", "Animation"] },
   { name: "Backend", items: ["Node.js", "NestJS", "Express", "REST APIs", "Authentication", "MongoDB"] },
-  { name: "Commerce", items: ["Shopify", "Liquid", "E-commerce", "Payment integrations", "Shipping integrations"] },
+  { name: "Commerce", items: ["Shopify", "Liquid", "E-commerce", "Online ordering", "Admin dashboards"] },
   { name: "Tools & deployment", items: ["Git", "GitHub", "Vercel", "Render", "MongoDB Atlas"] },
 ];
 
