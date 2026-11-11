@@ -191,7 +191,7 @@ export const projects: Project[] = [
     kind: "Gym membership platform",
     year: "2026",
     summary:
-      "Memberships, class booking and an admin dashboard for a gym with several branches — in English and Arabic.",
+      "Memberships, class booking and an admin dashboard for a gym — in English and Arabic.",
     role: "Design & full-stack development",
     scope: ["Interface design", "Frontend", "API & data model"],
     stack: ["Next.js", "NestJS", "MongoDB"],
@@ -204,22 +204,22 @@ export const projects: Project[] = [
     phone: primexMobile,
     shotAlt: "PrimeX homepage: a dark hero reading “Break the limit” beside a photo of the gym’s illuminated logo.",
     overview: [
-      "PrimeX is the website and back office for a gym that runs more than one branch. Visitors compare plans, meet the trainers and read the weekly timetable; members manage their subscription and bookings; staff run everything else from an admin dashboard.",
+      "PrimeX is the website and back office for a gym. Visitors compare plans, meet the trainers and read the weekly timetable; members manage their subscription and bookings; staff run everything else from an admin dashboard.",
       "The whole product works in English and Arabic — with a genuinely right-to-left layout, not a translated left-to-right one.",
     ],
     problem: [
-      "A gym’s offer is more complicated than a price list. Plans differ by branch access, class credits, freeze days and guest passes; classes have a fixed number of places; and a lot of the business still happens at the front desk and over WhatsApp.",
+      "A gym’s offer is more complicated than a price list. Plans differ by class credits, freeze days and guest passes; classes have a fixed number of places; and a lot of the business still happens at the front desk and over WhatsApp.",
       "The site had to sell memberships clearly without pretending the gym is an online-only business — and staff needed one place to see a member’s entire history.",
     ],
     solution: [
-      "I modelled the gym the way it actually operates — branches, plans, trainers, class types and recurring weekly schedules — and built every page on top of that model instead of around static content.",
+      "I modelled the gym the way it actually operates — plans, trainers, class types and recurring weekly schedules — and built every page on top of that model instead of around static content.",
       "Each member-facing capability — joining online, class booking and member accounts — sits behind its own feature flag on both frontend and backend, so the gym could launch as a showcase that routes enquiries to WhatsApp, with the full join-and-book flow ready to switch on without a rebuild.",
     ],
     features: [
-      { title: "Plans & join funnel", text: "Class-credit or unlimited plans, single- or all-branch tiers, freeze days and guest passes, with a guided join flow from plan to account." },
+      { title: "Plans & join funnel", text: "Class-credit or unlimited plans, freeze days and guest passes, with a guided join flow from plan to account." },
       { title: "Timetable & booking", text: "Sessions generated from weekly rules. Booking can never exceed capacity, and credits come back when a class is cancelled." },
       { title: "Member account", text: "Membership status, upcoming and past classes, profile and notification settings." },
-      { title: "Admin dashboard", text: "KPIs, branches, plans, trainers and schedules; members with their full history; content editing, an enquiry inbox and an audit log." },
+      { title: "Admin dashboard", text: "KPIs, plans, trainers and schedules; members with their full history; content editing, an enquiry inbox and an audit log." },
       { title: "English & Arabic", text: "Two languages with a right-to-left layout designed for Arabic, not mirrored as an afterthought." },
       { title: "Accounts", text: "Email and password with OTP verification, Google sign-in and password reset." },
     ],
