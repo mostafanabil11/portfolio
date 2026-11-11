@@ -1,4 +1,4 @@
-import { Reveal, RevealLines } from "./reveal";
+import { Reveal, RevealLines, Rule } from "./reveal";
 import { SectionLabel } from "./section-label";
 
 const groups = [
@@ -10,44 +10,56 @@ const groups = [
 
 export function Capabilities() {
   return (
-    <section id="capabilities" aria-labelledby="capabilities-title" className="frame section-y border-t border-line">
-      <div className="grid-12 gap-y-12">
-        <div className="col-span-12 lg:col-span-4">
+    <section id="capabilities" aria-labelledby="capabilities-title" className="frame section-y">
+      <div className="grid-12 items-end gap-y-6">
+        <div className="col-span-12 md:col-span-7">
           <SectionLabel n="02">Capabilities</SectionLabel>
           <RevealLines
             as="h2"
             id="capabilities-title"
             className="t-h2 mt-5"
-            lines={["One person across", "the whole product."]}
+            lines={[
+              "One person across",
+              <span key="b" className="t-serif text-muted">
+                the whole product.
+              </span>,
+            ]}
           />
-          <Reveal delay={0.1}>
-            <p className="t-body mt-5 max-w-[34ch] text-muted">
-              Fewer hand-offs, and nothing lost between design and code.
-            </p>
-          </Reveal>
         </div>
+        <Reveal delay={0.1} className="col-span-12 md:col-span-4 md:col-start-9">
+          <p className="t-body text-muted md:text-right">Fewer hand-offs, and nothing lost between design and code.</p>
+        </Reveal>
+      </div>
 
-        <div className="col-span-12 grid gap-x-[var(--col-gap)] gap-y-10 sm:grid-cols-2 lg:col-span-7 lg:col-start-6">
-          {groups.map((group, g) => (
-            <Reveal key={group.name} delay={g * 0.07}>
-              <div className="flex items-baseline justify-between border-b border-line pb-3">
-                <h3 className="t-label">{group.name}</h3>
-                <span className="t-mono text-faint">0{g + 1}</span>
-              </div>
-              <ul className="mt-4 grid gap-1.5">
+      {/* Hovering one row lets the others step back. */}
+      <ul className="group/list mt-[clamp(2.5rem,5vw,4rem)]">
+        {groups.map((group, g) => (
+          <li
+            key={group.name}
+            className="transition-opacity duration-500 ease-out group-hover/list:opacity-45 hover:!opacity-100"
+          >
+            <Rule />
+            <Reveal delay={g * 0.06} className="caps-row group/row grid-12 items-baseline gap-y-4 py-[clamp(1.5rem,3vw,2.25rem)]">
+              <span className="t-mono col-span-2 text-faint transition-colors duration-500 group-hover/row:text-accent md:col-span-1">
+                0{g + 1}
+              </span>
+              <h3 className="t-title col-span-10 transition-transform duration-700 ease-out group-hover/row:translate-x-2 md:col-span-4">
+                {group.name}
+              </h3>
+              <ul className="col-span-12 flex flex-wrap gap-1.5 md:col-span-7">
                 {group.items.map((item) => (
-                  <li
-                    key={item}
-                    className="text-[1.05rem] text-muted transition-[color,translate] duration-300 ease-out hover:translate-x-1 hover:text-fg"
-                  >
+                  <li key={item} className="chip chip-lg">
                     {item}
                   </li>
                 ))}
               </ul>
             </Reveal>
-          ))}
-        </div>
-      </div>
+          </li>
+        ))}
+        <li aria-hidden>
+          <Rule />
+        </li>
+      </ul>
     </section>
   );
 }

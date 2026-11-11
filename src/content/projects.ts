@@ -1,5 +1,13 @@
 import type { StaticImageData } from "next/image";
 
+import eliteCover from "./work/elite-motors/cover.webp";
+import eliteInventory from "./work/elite-motors/inventory.webp";
+import eliteCar from "./work/elite-motors/car.webp";
+import eliteFinancing from "./work/elite-motors/financing.webp";
+import eliteMobile from "./work/elite-motors/mobile.webp";
+import eliteMobileInventory from "./work/elite-motors/mobile-inventory.webp";
+import eliteMobileCar from "./work/elite-motors/mobile-car.webp";
+
 import primexCover from "./work/primex/cover.webp";
 import primexMembership from "./work/primex/membership.webp";
 import primexTrainer from "./work/primex/trainer.webp";
@@ -84,8 +92,101 @@ const webFlow = (frontend: string, api: string) => [
 
 export const projects: Project[] = [
   {
-    slug: "primex",
+    slug: "elite-motors",
     number: "01",
+    title: "Elite Motors",
+    kind: "Car dealership platform",
+    year: "2026",
+    summary:
+      "A dealership website with a searchable inventory, car pages with an instalment calculator, and a staff dashboard for stock, photos and sales.",
+    role: "Design & full-stack development",
+    scope: ["Interface design", "Frontend", "API & data model"],
+    stack: ["Next.js", "Express", "MongoDB"],
+    links: {
+      live: "https://elite-motors.mostafa-nabil-arafa01.workers.dev",
+      github: "https://github.com/mostafanabil11/car-dealership",
+      health: "https://elite-motors-api.onrender.com/api/health",
+    },
+    shot: eliteCover,
+    phone: eliteMobile,
+    shotAlt:
+      "Elite Motors homepage: the headline “Drive the exceptional” over a red saloon, above a search panel for make, model, body type and price.",
+    overview: [
+      "Elite Motors is the website and back office for a car showroom in Egypt. Visitors search the stock, open a car, estimate a monthly instalment and get in touch by phone or WhatsApp; staff run the inventory from an admin dashboard.",
+      "It was built to be handed to a real dealership: everything specific to the business — name, contact details, opening hours, finance rate — lives in a single configuration file.",
+    ],
+    problem: [
+      "A dealership’s stock changes every day. Cars arrive, get reserved and sell — and each one needs photos, a spec sheet and a price that staff can update from a phone on the forecourt.",
+      "Buyers, meanwhile, arrive with a budget rather than a model. The site had to make the stock easy to narrow down, and stay fast while staff edit the same data.",
+    ],
+    solution: [
+      "I built the inventory around one query model: every filter — make, model, price, year, fuel, gearbox, condition and body type — lives in the URL. A search is a link you can share, the back button works, and results are rendered on the server.",
+      "Staff get a dashboard that follows a car through its whole life: draft, available, reserved, sold. A sold car leaves the listings but keeps its page and its place in the sales figures.",
+    ],
+    features: [
+      { title: "Inventory search", text: "Word-by-word search that matches partial words, filters, body-type shortcuts, sorting and pagination — all reflected in the URL." },
+      { title: "Car pages", text: "Gallery, specifications, features, similar cars, a share button and structured data for search engines." },
+      { title: "Instalment calculator", text: "Down-payment and term options that recalculate the monthly figure instantly, on every car page and on the financing page." },
+      { title: "Staff dashboard", text: "Stock and sales KPIs, sales per month, the most-viewed cars and a list of cars that still need photos." },
+      { title: "Photo management", text: "Up to twenty photos per car: bulk upload, reorder, choose a cover, edit alt text." },
+      { title: "Staff accounts", text: "Admin and staff roles with no public sign-up, and password reset by one-time link." },
+    ],
+    architecture: {
+      text: "A Next.js App Router site talks to an Express REST API backed by MongoDB. The browser only ever calls the site itself — API requests are proxied through it — so the staff session cookie stays first-party on every browser.",
+      flow: [
+        { label: "Browser", detail: "Buyers & staff" },
+        { label: "Next.js", detail: "App Router" },
+        { label: "Express API", detail: "REST · Zod" },
+        { label: "MongoDB", detail: "Mongoose" },
+      ],
+      services: [
+        { label: "Cloudinary", detail: "Car photos" },
+        { label: "Resend", detail: "Password-reset email" },
+      ],
+      decisions: [
+        { title: "Filters live in the URL", text: "Search state is the address bar, not component state — shareable, bookmarkable and server-rendered. The previous results stay on screen while new ones load." },
+        { title: "One schema, every request", text: "Zod validates, coerces and strips every body, query and parameter. Only plain strings and numbers get through, which also shuts out NoSQL operator injection." },
+        { title: "Cached pages, instant edits", text: "Public pages are cached under a tag; any change in the dashboard invalidates it, so staff see an edit immediately without the site rendering on every request." },
+        { title: "Sessions that can be revoked", text: "A short-lived access token is held in memory and the refresh token in an httpOnly cookie. A version counter on the account ends every session on logout, password change or role change." },
+      ],
+    },
+    stackDetail: [
+      { group: "Frontend", items: ["Next.js 16", "React 19", "TypeScript", "SWR", "Hand-written CSS"] },
+      { group: "Backend", items: ["Express 5", "Zod 4", "JWT with refresh rotation", "Rate limiting", "Helmet"] },
+      { group: "Services", items: ["Cloudinary", "Resend"] },
+      { group: "Data & testing", items: ["MongoDB", "Mongoose 9", "Vitest", "Supertest"] },
+    ],
+    screens: [
+      { kind: "wide", figure: { src: eliteInventory, alt: "Elite Motors inventory with a filter sidebar, search field, body-type pills and car cards.", caption: "The inventory — search, filters and body-type shortcuts." } },
+      {
+        kind: "pair",
+        figures: [
+          { src: eliteCar, alt: "Elite Motors car page for a Mercedes-Benz C 200 with a photo, price and instalment options.", caption: "A car page, with the price and instalment estimate beside the gallery." },
+          { src: eliteFinancing, alt: "Elite Motors financing page with an instalment calculator.", caption: "The financing page and its calculator." },
+        ],
+      },
+      {
+        kind: "phones",
+        caption: "Buyers browse on a phone; so do staff on the forecourt.",
+        figures: [
+          { src: eliteMobileInventory, alt: "Elite Motors inventory on a phone.", caption: "Inventory" },
+          { src: eliteMobileCar, alt: "An Elite Motors car page on a phone.", caption: "Car page" },
+        ],
+      },
+    ],
+    challenges: [
+      { title: "Counting views honestly", text: "Car pages are cached, and bots and link previews load them too. Views are counted by a separate, rate-limited request from the browser, once per session — so “most viewed” in the dashboard means people." },
+      { title: "Search that forgives", text: "MongoDB’s text index can’t match half a word. Search splits the query and matches every word against title, colour, body and fuel, so “white coro 2022” still finds the car." },
+      { title: "Photos from a phone", text: "Staff upload straight from the forecourt. Photos are resized in the browser first, so large phone pictures upload in seconds, then streamed to the image service without touching the server’s disk." },
+    ],
+    result: [
+      "Elite Motors is live with a seeded showroom, a working inventory search and the full staff dashboard.",
+      "The API is covered by unit and integration tests — validators, the search query builder, authentication and password reset — so it can be handed to a dealership and changed with confidence.",
+    ],
+  },
+  {
+    slug: "primex",
+    number: "02",
     title: "PrimeX",
     kind: "Gym membership platform",
     year: "2026",
@@ -172,7 +273,7 @@ export const projects: Project[] = [
   },
   {
     slug: "novacart",
-    number: "02",
+    number: "03",
     title: "NovaCart",
     kind: "Full-stack e-commerce",
     year: "2026",
@@ -251,7 +352,7 @@ export const projects: Project[] = [
   },
   {
     slug: "fire-house",
-    number: "03",
+    number: "04",
     title: "Fire House",
     kind: "Restaurant ordering",
     year: "2026",
@@ -333,7 +434,7 @@ export const projects: Project[] = [
   },
   {
     slug: "valiant",
-    number: "04",
+    number: "05",
     title: "Valiant",
     kind: "Fashion e-commerce",
     year: "2026",
@@ -420,7 +521,7 @@ export const projects: Project[] = [
   },
   {
     slug: "kova",
-    number: "05",
+    number: "06",
     title: "Kova",
     kind: "Custom Shopify theme",
     year: "2026",

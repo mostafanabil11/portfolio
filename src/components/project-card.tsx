@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ViewTransition } from "react";
 import type { Project } from "@/content/projects";
 import { ProjectPanel, morphName } from "./project-panel";
+import { Reveal } from "./reveal";
+import { Arrow, Roll } from "./ui";
 import { cn } from "@/lib/cn";
 
 const caseHref = (project: Project) => `/work/${project.slug}`;
@@ -24,71 +26,69 @@ export function RollingNumber({ value }: { value: string }) {
 }
 
 /**
- * A project on the home page. The screen opens the live site ("View"); the
- * title opens the case study, morphing the screen into its hero.
+ * A project on the home page. The screen and the title both open the case
+ * study (the screen morphs into its hero); the live site has its own button.
  */
 export function ProjectCard({ project, featured = false }: { project: Project; featured?: boolean }) {
   const live = project.links.live;
-  const mediaProps = live
-    ? { href: live, target: "_blank", rel: "noreferrer", "data-cursor": "View ↗" }
-    : { href: caseHref(project), "data-cursor": "Read" };
-
-  const panel = (
-    <ViewTransition name={morphName(project.slug)} share="morph" default="none">
-      <ProjectPanel
-        project={project}
-        size={featured ? "wide" : "card"}
-        sizes={featured ? "(min-width: 768px) 84vw, 100vw" : "(min-width: 768px) 42vw, 100vw"}
-      />
-    </ViewTransition>
-  );
 
   return (
     <article id={`work-${project.slug}`} className={cn("group", featured && "md:col-span-2")}>
-      {live ? (
-        <a {...mediaProps} tabIndex={-1} aria-hidden className="block">
-          {panel}
-        </a>
-      ) : (
-        <Link {...mediaProps} tabIndex={-1} aria-hidden className="block">
-          {panel}
-        </Link>
-      )}
+      <Link href={caseHref(project)} tabIndex={-1} aria-hidden data-cursor="Open" className="block">
+        <ViewTransition name={morphName(project.slug)} share="morph" default="none">
+          <ProjectPanel
+            project={project}
+            size={featured ? "wide" : "card"}
+            sizes={featured ? "(min-width: 768px) 84vw, 100vw" : "(min-width: 768px) 42vw, 100vw"}
+          />
+        </ViewTransition>
+      </Link>
 
-      <div className="mt-5 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 md:mt-6 md:grid-cols-[auto_minmax(0,1fr)_auto]">
-        <span className="pt-[0.3em] text-muted">
-          <RollingNumber value={project.number} />
-        </span>
-
+      <Reveal
+        delay={0.12}
+        className={cn(
+          "mt-5 grid gap-x-[var(--col-gap)] gap-y-5 md:mt-6",
+          featured && "md:grid-cols-[minmax(0,1fr)_auto] md:items-end",
+        )}
+      >
         <div>
-          <h3 className="t-h3">
-            <Link
-              href={caseHref(project)}
-              className="transition-colors duration-300 hover:text-accent focus-visible:text-accent"
-            >
+          <p className="t-mono flex flex-wrap items-center gap-x-3 gap-y-1 text-muted">
+            <RollingNumber value={project.number} />
+            <span aria-hidden className="h-px w-5 bg-line-strong" />
+            <span>{project.kind}</span>
+            <span className="text-faint">{project.year}</span>
+          </p>
+
+          <h3 className={cn("mt-3", featured ? "t-h2" : "t-title")}>
+            <Link href={caseHref(project)} className="link-draw">
               {project.title}
             </Link>
           </h3>
-          <p className="t-body mt-1 text-muted">{project.kind}</p>
-          {featured && <p className="t-body mt-3 max-w-[58ch] text-muted">{project.summary}</p>}
-          <p className="t-mono mt-3 text-faint">{project.stack.join("  ·  ")}</p>
+
+          <p className="t-body mt-2.5 max-w-[56ch] text-muted">{project.summary}</p>
+
+          <ul aria-label="Stack" className="mt-4 flex flex-wrap gap-1.5">
+            {project.stack.map((item) => (
+              <li key={item} className="chip">
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <div className="col-span-2 mt-5 flex items-center gap-5 md:col-span-1 md:mt-0 md:items-start md:pt-[0.2em]">
+        <div className="flex flex-wrap items-center gap-2">
+          <Link href={caseHref(project)} className="btn btn-sm btn-solid">
+            <Roll>Case study</Roll>
+            <Arrow dir="right" />
+          </Link>
           {live && (
-            <a href={live} target="_blank" rel="noreferrer" className="t-label group/link inline-flex items-center gap-1.5">
-              Live site
-              <span className="inline-block transition-transform duration-500 ease-out group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5">
-                ↗
-              </span>
+            <a href={live} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline">
+              <Roll>Live site</Roll>
+              <Arrow />
             </a>
           )}
-          <Link href={caseHref(project)} className="t-label group/link inline-flex items-center gap-1.5 text-muted transition-colors hover:text-fg">
-            Case study
-            <span className="inline-block transition-transform duration-500 ease-out group-hover/link:translate-x-1">→</span>
-          </Link>
         </div>
-      </div>
+      </Reveal>
     </article>
   );
 }

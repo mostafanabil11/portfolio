@@ -5,7 +5,8 @@ import { m, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 import { EASE_OUT } from "./motion-provider";
 
 /**
- * A label that trails the pointer over elements marked `data-cursor="Label"`.
+ * A label that trails the pointer over elements marked `data-cursor="Label"`,
+ * and the pointer position for cards that light up under it.
  * Mouse and trackpad only; it never replaces the cursor anywhere else.
  */
 export function Cursor() {
@@ -35,6 +36,13 @@ export function Cursor() {
     const move = (event: PointerEvent) => {
       x.set(event.clientX);
       y.set(event.clientY);
+      // Cards marked `.spot` light up under the pointer (see globals.css).
+      const spot = (event.target as Element | null)?.closest<HTMLElement>(".spot");
+      if (spot) {
+        const box = spot.getBoundingClientRect();
+        spot.style.setProperty("--mx", `${event.clientX - box.left}px`);
+        spot.style.setProperty("--my", `${event.clientY - box.top}px`);
+      }
     };
     const over = (event: PointerEvent) => {
       const target = (event.target as Element | null)?.closest<HTMLElement>("[data-cursor]");

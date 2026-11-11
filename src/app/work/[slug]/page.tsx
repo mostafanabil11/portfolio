@@ -5,6 +5,7 @@ import { CaseSection, Lead, NoteGrid } from "@/components/case/case-section";
 import { FlowDiagram } from "@/components/case/flow-diagram";
 import { NextProject } from "@/components/case/next-project";
 import { Screens } from "@/components/case/screens";
+import { Arrow } from "@/components/ui";
 import { getNextProject, getProject, projects, type Project } from "@/content/projects";
 
 export const dynamicParams = false;
@@ -101,10 +102,7 @@ function Stack({ groups }: { groups: Project["stackDetail"] }) {
           <dt className="t-label border-b border-line pb-3 text-faint">{group.group}</dt>
           <dd className="mt-4 flex flex-wrap gap-2">
             {group.items.map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-line px-3 py-1 text-[0.875rem] text-muted transition-colors hover:border-line-strong hover:text-fg"
-              >
+              <span key={item} className="chip chip-lg">
                 {item}
               </span>
             ))}
@@ -148,15 +146,12 @@ function Links({ links }: { links: Project["links"] }) {
             href={row.href}
             target="_blank"
             rel="noreferrer"
-            className="group flex h-full flex-col justify-between gap-10 rounded-[12px] border border-line bg-surface p-5 transition-colors duration-500 hover:border-line-strong md:p-6"
+            className="spot group relative flex h-full flex-col justify-between gap-10 overflow-hidden rounded-[14px] border border-line bg-surface p-5 transition-colors duration-500 hover:border-line-strong md:p-6"
           >
             <span className="flex items-center justify-between">
               <span className="t-h3">{row.label}</span>
-              <span
-                aria-hidden
-                className="text-muted transition-[translate,color] duration-500 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
-              >
-                ↗
+              <span className="grid size-9 place-items-center rounded-full border border-line-strong text-muted transition-colors duration-500 group-hover:border-fg group-hover:bg-fg group-hover:text-bg">
+                <Arrow />
               </span>
             </span>
             <span className="t-mono break-all text-muted">{row.text}</span>

@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { ViewTransition } from "react";
 import type { Project } from "@/content/projects";
+import { Magnetic } from "../magnetic";
 import { ProjectPanel, morphName } from "../project-panel";
+import { Arrow, Roll } from "../ui";
 import { ApiStatus } from "./api-status";
 
 const delay = (ms: number) => ({ "--delay": `${ms}ms` }) as React.CSSProperties;
@@ -49,13 +51,16 @@ export function CaseHero({ project, total }: { project: Project; total: number }
           {live || github ? (
             <div className="flex flex-wrap gap-3">
               {live && (
-                <a href={live} target="_blank" rel="noreferrer" className="btn btn-solid">
-                  Visit live site <span aria-hidden>↗</span>
-                </a>
+                <Magnetic>
+                  <a href={live} target="_blank" rel="noreferrer" className="btn btn-solid">
+                    <Roll>Visit live site</Roll>
+                    <Arrow />
+                  </a>
+                </Magnetic>
               )}
               {github && (
                 <a href={github} target="_blank" rel="noreferrer" className="btn btn-outline">
-                  Source code
+                  <Roll>Source code</Roll>
                 </a>
               )}
             </div>

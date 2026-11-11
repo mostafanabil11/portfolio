@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Cursor } from "@/components/cursor";
 import { MotionProvider } from "@/components/motion-provider";
+import { ScrollProgress } from "@/components/scroll-progress";
 import { SiteHeader } from "@/components/site-header";
-import { mono, sans } from "@/lib/fonts";
+import { mono, sans, serif } from "@/lib/fonts";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -41,7 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       // Lets Next switch smooth scrolling off during route changes, so a new page
       // starts at the top instantly (and the view-transition morph lands in view).
       data-scroll-behavior="smooth"
-      className={`${sans.variable} ${mono.variable}`}
+      className={`${sans.variable} ${serif.variable} ${mono.variable}`}
     >
       <body>
         <a
@@ -51,8 +52,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <MotionProvider>
+          <ScrollProgress />
           <SiteHeader />
-          <main id="main">{children}</main>
+          <main id="main">
+            <div aria-hidden className="grain" />
+            {children}
+          </main>
           <Cursor />
         </MotionProvider>
       </body>

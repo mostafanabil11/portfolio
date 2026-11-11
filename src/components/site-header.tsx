@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, m } from "motion/react";
 import { LocalTime } from "./local-time";
 import { EASE_IN_OUT, EASE_OUT } from "./motion-provider";
+import { Roll } from "./ui";
 import { nav, site, type NavId } from "@/lib/site";
 import { cn } from "@/lib/cn";
 
@@ -16,9 +17,13 @@ export function SiteHeader() {
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [hovered, setHovered] = useState<NavId | null>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const pillRef = useRef<HTMLLIElement>(null);
 
   const current: NavId | null = onHome ? section : pathname.startsWith("/work") ? "work" : null;
+  const target = hovered ?? current;
 
   // Step out of the way while reading down; come back as soon as the reader scrolls up.
   useEffect(() => {
@@ -60,6 +65,27 @@ export function SiteHeader() {
     return () => observer.disconnect();
   }, [onHome]);
 
+  // One pill sits behind the current link and slides to whichever link is hovered.
+  useEffect(() => {
+    const list = listRef.current;
+    const pill = pillRef.current;
+    if (!list || !pill) return;
+    const place = () => {
+      const link = target ? list.querySelector<HTMLElement>(`[data-nav="${target}"]`) : null;
+      if (!link || link.offsetWidth === 0) {
+        pill.style.opacity = "0";
+        return;
+      }
+      pill.style.opacity = "1";
+      pill.style.width = `${link.offsetWidth}px`;
+      pill.style.transform = `translateX(${link.offsetLeft}px)`;
+    };
+    place();
+    const observer = new ResizeObserver(place);
+    observer.observe(list);
+    return () => observer.disconnect();
+  }, [target]);
+
   // Mobile menu (a disclosure): lock scroll, close on Escape, keep focus on the toggle.
   useEffect(() => {
     if (!open) return;
@@ -84,70 +110,86 @@ export function SiteHeader() {
       <header
         style={{ viewTransitionName: "site-header" }}
         className={cn(
-          "fixed inset-x-0 top-0 z-50 border-b transition-[translate,background-color,border-color] duration-500 ease-out",
-          scrolled || open ? "border-line bg-bg/85 backdrop-blur-md" : "border-transparent bg-transparent",
-          hidden && !open && "-translate-y-full",
+          "pointer-events-none fixed inset-x-0 top-0 z-50 transition-[translate] duration-700 ease-out",
+          hidden && !open && "-translate-y-[130%]",
         )}
       >
-        <div className="frame grid-12 h-[var(--header-h)] items-center">
-          <Link
-            href="/"
-            onClick={close}
+        <div className="frame pt-3">
+          <div
             className={cn(
-              "t-label col-span-6 justify-self-start transition-opacity duration-500 md:col-span-3",
-              // On the home page the hero carries the name until the reader scrolls.
-              onHome && !scrolled && !open && "pointer-events-none opacity-0",
+              "pointer-events-auto relative flex h-[3.25rem] items-center justify-between gap-4 rounded-full border pl-5 pr-2 transition-[background-color,border-color,box-shadow] duration-700 ease-out",
+              scrolled || open
+                ? "border-line bg-surface/70 shadow-[0_12px_40px_-18px_rgb(0_0_0/0.9)] backdrop-blur-xl"
+                : "border-transparent bg-transparent",
             )}
-            aria-label={`${site.name} — home`}
           >
-            {site.name}
-          </Link>
+            <Link href="/" onClick={close} className="t-label inline-flex items-center gap-2.5" aria-label={`${site.name} — home`}>
+              <span aria-hidden className="pulse" />
+              {site.name}
+            </Link>
 
-          <nav aria-label="Primary" className="hidden md:col-span-4 md:col-start-5 md:block">
-            <ul className="flex gap-[clamp(1.25rem,2.4vw,2.5rem)]">
-              {nav.map((item) => {
-                const active = current === item.id;
-                return (
-                  <li key={item.id}>
-                    <Link
-                      href={item.href}
-                      aria-current={active ? "location" : undefined}
-                      className="group t-label relative inline-flex items-center"
-                    >
-                      <span
-                        aria-hidden
+            <nav aria-label="Primary" className="absolute left-1/2 hidden -translate-x-1/2 md:block">
+              <ul ref={listRef} className="relative flex items-center" onPointerLeave={() => setHovered(null)}>
+                <li
+                  ref={pillRef}
+                  aria-hidden
+                  role="presentation"
+                  className="absolute inset-y-0 left-0 my-auto h-8 rounded-full bg-white/[0.08] opacity-0 transition-[transform,width,opacity] duration-500 ease-out"
+                />
+                {nav.map((item) => {
+                  const active = current === item.id;
+                  return (
+                    <li key={item.id}>
+                      <Link
+                        href={item.href}
+                        data-nav={item.id}
+                        aria-current={active ? "location" : undefined}
+                        onPointerEnter={() => setHovered(item.id)}
+                        onFocus={() => setHovered(item.id)}
+                        onBlur={() => setHovered(null)}
                         className={cn(
-                          "absolute -left-3 top-1/2 size-[5px] -translate-y-1/2 bg-accent transition-transform duration-500 ease-out",
-                          active ? "scale-100" : "scale-0",
-                        )}
-                      />
-                      <span
-                        className={cn(
-                          "transition-colors duration-300",
-                          active ? "text-fg" : "text-muted group-hover:text-fg",
+                          "t-label relative inline-flex h-8 items-center px-3.5 transition-colors duration-300",
+                          active || hovered === item.id ? "text-fg" : "text-muted",
                         )}
                       >
                         {item.label}
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
 
-          <div className="col-span-6 flex items-center justify-end gap-6 md:col-span-4 md:col-start-9">
-            <LocalTime className="t-mono hidden md:inline" />
-            <button
-              ref={toggleRef}
-              type="button"
-              className="t-label md:hidden"
-              aria-expanded={open}
-              aria-controls="mobile-menu"
-              onClick={() => setOpen((value) => !value)}
-            >
-              {open ? "Close" : "Menu"}
-            </button>
+            <div className="flex items-center gap-4">
+              <LocalTime className="t-mono hidden lg:inline" />
+              <Link href="/#contact" className="btn btn-sm btn-solid hidden md:inline-flex">
+                <Roll>Let’s talk</Roll>
+              </Link>
+              <button
+                ref={toggleRef}
+                type="button"
+                className="t-label inline-flex h-9 items-center gap-2.5 rounded-full border border-line-strong px-4 md:hidden"
+                aria-expanded={open}
+                aria-controls="mobile-menu"
+                onClick={() => setOpen((value) => !value)}
+              >
+                {open ? "Close" : "Menu"}
+                <span aria-hidden className="relative block h-2 w-3.5">
+                  <span
+                    className={cn(
+                      "absolute inset-x-0 top-0 h-px bg-fg transition-transform duration-500 ease-out",
+                      open && "translate-y-[3.5px] rotate-45",
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "absolute inset-x-0 bottom-0 h-px bg-fg transition-transform duration-500 ease-out",
+                      open && "-translate-y-[3.5px] -rotate-45",
+                    )}
+                  />
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -156,7 +198,7 @@ export function SiteHeader() {
         {open && (
           <m.div
             id="mobile-menu"
-            className="frame fixed inset-0 z-40 flex flex-col bg-bg pb-8 pt-[calc(var(--header-h)+2.5rem)] md:hidden"
+            className="frame fixed inset-0 z-40 flex flex-col bg-bg pb-8 pt-[calc(var(--header-h)+2rem)] md:hidden"
             initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
             animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
             exit={{ clipPath: "inset(0% 0% 100% 0%)" }}
@@ -177,9 +219,7 @@ export function SiteHeader() {
                         aria-current={current === item.id ? "location" : undefined}
                         className="flex items-baseline justify-between py-3"
                       >
-                        <span className="t-h1">
-                          {item.label}
-                        </span>
+                        <span className="t-h1">{item.label}</span>
                         <span className={cn("t-mono", current === item.id ? "text-accent" : "text-muted")}>
                           0{i + 1}
                         </span>

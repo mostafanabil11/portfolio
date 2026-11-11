@@ -8,8 +8,10 @@ export default function NotFound() {
         <span className="line-mask">
           <span>This page doesn’t exist.</span>
         </span>
-        <span className="line-mask text-muted">
-          <span style={{ "--i": 1 } as React.CSSProperties}>The work is still here, though.</span>
+        <span className="line-mask">
+          <span style={{ "--i": 1 } as React.CSSProperties} className="t-serif text-muted">
+            The work is still here, though.
+          </span>
         </span>
       </h1>
       <Link href="/" className="btn btn-outline mt-10 self-start">

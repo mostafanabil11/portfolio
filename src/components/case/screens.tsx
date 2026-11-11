@@ -1,5 +1,6 @@
 import type { Figure, Screen } from "@/content/projects";
 import { RevealImage } from "../reveal-image";
+import { Zoom } from "./zoom";
 import { cn } from "@/lib/cn";
 
 function Shot({
@@ -17,13 +18,15 @@ function Shot({
 }) {
   return (
     <figure className={className}>
-      <RevealImage
-        src={figure.src}
-        alt={figure.alt}
-        sizes={sizes}
-        ratio={figure.src.width / figure.src.height}
-        className={cn("border border-line", rounded)}
-      />
+      <Zoom src={figure.src} alt={figure.alt} caption={figure.caption}>
+        <RevealImage
+          src={figure.src}
+          alt={figure.alt}
+          sizes={sizes}
+          ratio={figure.src.width / figure.src.height}
+          className={cn("border border-line transition-colors duration-500 hover:border-line-strong", rounded)}
+        />
+      </Zoom>
       <figcaption className="t-mono mt-3 flex gap-3 text-muted">
         <span className="shrink-0 text-faint">{label}</span>
         <span>{figure.caption}</span>
@@ -32,7 +35,7 @@ function Shot({
   );
 }
 
-/** Large screenshots, laid out by kind: full width, side by side, or phones. */
+/** Large screenshots, laid out by kind: full width, side by side, or phones. Each opens enlarged. */
 export function Screens({ screens }: { screens: Screen[] }) {
   let count = 0;
   const next = () => `Fig. ${String(++count).padStart(2, "0")}`;

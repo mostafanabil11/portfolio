@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ─── Tokens ──────────────────────────────────────────────────────────────
-   Near-black, three greys for hierarchy, one warm accent. */
+   Near-black, three greys for hierarchy, one warm accent used sparingly. */
 
 :root {
   --bg: #0a0a0b;
@@ -16,7 +16,8 @@
 
   --gutter: clamp(1rem, 3vw, 3rem);
   --col-gap: clamp(0.75rem, 1.6vw, 1.5rem);
-  --header-h: 4rem;
+  /* The floating bar (3.25rem) plus the space above and below it. */
+  --header-h: 4.75rem;
   --section-y: clamp(5rem, 10vw, 9rem);
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -37,6 +38,7 @@
   --color-accent: var(--accent);
 
   --font-sans: var(--font-mona), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), "Iowan Old Style", Georgia, serif;
   --font-mono: var(--font-fragment), ui-monospace, "SFMono-Regular", monospace;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -67,8 +69,8 @@ body {
 }
 
 ::selection {
-  background: var(--accent);
-  color: #0a0a0b;
+  background: var(--fg);
+  color: var(--bg);
 }
 
 :focus-visible {
@@ -79,6 +81,67 @@ body {
 
 img {
   user-select: none;
+}
+
+/* Its own stacking context, so the atmosphere below can sit behind the content. */
+main {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Atmosphere ──────────────────────────────────────────────────────────
+   Two slow lights at the top of the home page and a film grain over them
+   (the grain also dithers the gradients, so they don't band). Both are
+   colourless: depth without adding to the palette. */
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.glow {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 100vh;
+  z-index: -2;
+  pointer-events: none;
+  overflow-x: clip;
+}
+.glow::before,
+.glow::after {
+  content: "";
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  will-change: transform;
+}
+.glow::before {
+  top: -24rem;
+  right: -12%;
+  width: min(78vw, 68rem);
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.085), rgb(255 255 255 / 0.03) 48%, transparent);
+  animation: drift-a 26s var(--ease-in-out) infinite alternate;
+}
+.glow::after {
+  top: 22rem;
+  left: -22%;
+  width: min(64vw, 52rem);
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.04), transparent);
+  animation: drift-b 32s var(--ease-in-out) infinite alternate;
+}
+@keyframes drift-a {
+  to {
+    transform: translate3d(-9vw, 6vh, 0) scale(1.1);
+  }
+}
+@keyframes drift-b {
+  to {
+    transform: translate3d(8vw, -5vh, 0) scale(0.92);
+  }
 }
 
 /* ─── Layout primitives ────────────────────────────────────────────────── */
@@ -100,31 +163,41 @@ img {
 }
 
 /* ─── Type ─────────────────────────────────────────────────────────────────
-   One family (Mona Sans) at two widths: slightly expanded for headings,
-   normal for reading. Mono for numbers and metadata. */
+   Mona Sans at two widths (slightly expanded for headings, normal for
+   reading), an italic serif for the quieter half of a headline, and a mono
+   for numbers and metadata. */
 
 @utility t-hero {
-  font-size: clamp(2.35rem, 4.6vw, 4.4rem);
+  font-size: clamp(2.2rem, 10vw, 8.25rem);
   font-weight: 600;
-  font-stretch: 110%;
-  line-height: 1.02;
-  letter-spacing: -0.035em;
+  font-stretch: 112%;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
 }
 
 @utility t-h1 {
-  font-size: clamp(2.25rem, 4.4vw, 4rem);
+  font-size: clamp(2.25rem, 5vw, 4.5rem);
   font-weight: 600;
   font-stretch: 110%;
-  line-height: 1.04;
-  letter-spacing: -0.035em;
+  line-height: 1.03;
+  letter-spacing: -0.037em;
 }
 
 @utility t-h2 {
-  font-size: clamp(1.75rem, 2.9vw, 2.6rem);
+  font-size: clamp(1.75rem, 3.4vw, 3.1rem);
   font-weight: 600;
   font-stretch: 108%;
-  line-height: 1.1;
-  letter-spacing: -0.028em;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+/* Project titles on the home page: between h2 and h3. */
+@utility t-title {
+  font-size: clamp(1.4rem, 2vw, 1.75rem);
+  font-weight: 580;
+  font-stretch: 106%;
+  line-height: 1.15;
+  letter-spacing: -0.022em;
 }
 
 @utility t-h3 {
@@ -163,22 +236,44 @@ img {
   font-variant-numeric: tabular-nums;
 }
 
+/* The serif runs small next to Mona Sans, so it is set a touch larger. */
+@utility t-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-size: 1.12em;
+  letter-spacing: -0.02em;
+}
+
 /* ─── Buttons ─────────────────────────────────────────────────────────── */
 
 @utility btn {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  height: 2.75rem;
-  padding-inline: 1.25rem;
+  height: 3rem;
+  padding-inline: 1.4rem;
   border-radius: 999px;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 540;
   letter-spacing: -0.005em;
+  white-space: nowrap;
   transition:
-    background-color 0.3s var(--ease-out),
-    border-color 0.3s var(--ease-out),
-    color 0.3s var(--ease-out);
+    background-color 0.4s var(--ease-out),
+    border-color 0.4s var(--ease-out),
+    color 0.4s var(--ease-out),
+    scale 0.4s var(--ease-out);
+  &:active {
+    scale: 0.97;
+  }
+}
+
+@utility btn-sm {
+  height: 2.375rem;
+  padding-inline: 1rem;
+  font-size: 0.8125rem;
+  gap: 0.45rem;
 }
 
 @utility btn-solid {
@@ -194,33 +289,210 @@ img {
   color: var(--fg);
   &:hover {
     border-color: rgb(255 255 255 / 0.34);
-    background: rgb(255 255 255 / 0.03);
+    background: rgb(255 255 255 / 0.04);
+  }
+}
+
+/* A label that rolls up and comes back from below when its button is hovered. */
+.roll {
+  position: relative;
+  display: inline-block;
+  overflow: clip;
+  line-height: 1.4;
+}
+.roll > span {
+  display: block;
+  transition: transform 0.55s var(--ease-out);
+}
+.roll::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 100% auto auto 0;
+  transition: transform 0.55s var(--ease-out);
+}
+
+/* An arrow that leaves in its own direction and re-enters from the other side. */
+.arrow {
+  position: relative;
+  display: inline-block;
+  overflow: clip;
+  line-height: 1.4;
+}
+.arrow > span {
+  display: block;
+  transition: transform 0.55s var(--ease-out);
+}
+.arrow::after {
+  content: attr(data-arrow);
+  position: absolute;
+  inset: 0;
+  transform: translate(var(--from-x, -110%), var(--from-y, 110%));
+  transition: transform 0.55s var(--ease-out);
+}
+.arrow[data-dir="down"] {
+  --from-x: 0%;
+  --from-y: -110%;
+  --to-x: 0%;
+  --to-y: 110%;
+}
+.arrow[data-dir="right"] {
+  --from-x: -110%;
+  --from-y: 0%;
+  --to-x: 110%;
+  --to-y: 0%;
+}
+
+@media (hover: hover) {
+  :is(a, button):hover .roll > span,
+  :is(a, button):hover .roll::after {
+    transform: translateY(-100%);
+  }
+  :is(a, button):hover .arrow > span {
+    transform: translate(var(--to-x, 110%), var(--to-y, -110%));
+  }
+  :is(a, button):hover .arrow::after {
+    transform: none;
+  }
+}
+
+/* ─── Small parts ─────────────────────────────────────────────────────── */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 1.75rem;
+  padding-inline: 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: nowrap;
+  transition:
+    border-color 0.4s var(--ease-out),
+    color 0.4s var(--ease-out);
+}
+
+.group:hover .chip {
+  border-color: var(--line-strong);
+}
+@media (hover: hover) {
+  .chip:hover {
+    border-color: var(--line-strong);
+    color: var(--fg);
+  }
+}
+.chip-lg {
+  height: 2rem;
+  padding-inline: 0.875rem;
+  font-size: 0.875rem;
+}
+.caps-row:hover .chip {
+  border-color: var(--line-strong);
+  color: var(--fg);
+}
+
+/* A dot with a slow ring: "available". */
+.pulse {
+  position: relative;
+  display: inline-block;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-ring 2.4s var(--ease-out) infinite;
+}
+@keyframes pulse-ring {
+  from {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(3.4);
+  }
+}
+
+/* A soft light that follows the pointer across a card (set by <Cursor>). */
+.spot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    26rem circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 255 255 / 0.075),
+    transparent 62%
+  );
+  transition: opacity 0.6s var(--ease-out);
+}
+@media (hover: hover) {
+  .spot:hover::after {
+    opacity: 1;
+  }
+}
+
+/* ─── Marquee ─────────────────────────────────────────────────────────── */
+
+.marquee {
+  display: flex;
+  overflow: clip;
+  user-select: none;
+  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+}
+.marquee-row {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  min-width: 100%;
+  animation: marquee 46s linear infinite;
+}
+@media (hover: hover) {
+  .marquee:hover .marquee-row {
+    animation-play-state: paused;
+  }
+}
+@keyframes marquee {
+  to {
+    transform: translate3d(-100%, 0, 0);
   }
 }
 
 /* ─── Load-time line reveal (CSS, so it runs before hydration) ────────── */
 
+/* The padding leaves room for descenders and the italic's overhang. */
 .line-mask {
   display: block;
   overflow: clip;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding: 0 0.12em 0.16em 0;
+  margin: 0 -0.12em -0.16em 0;
 }
 
 .line-mask > span {
   display: block;
-  animation: line-rise 1.2s var(--ease-out) both;
-  animation-delay: calc(var(--i, 0) * 90ms + 120ms);
+  /* A long line breaks into even halves instead of leaving one word behind. */
+  text-wrap: balance;
+  animation: line-rise 1.25s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 100ms + 120ms);
 }
 
 .fade-late {
-  animation: fade-up 1s var(--ease-out) both;
+  animation: fade-up 1.1s var(--ease-out) both;
   animation-delay: var(--delay, 600ms);
 }
 
 @keyframes line-rise {
   from {
-    transform: translate3d(0, 108%, 0);
+    transform: translate3d(0, 112%, 0);
   }
   to {
     transform: none;
@@ -230,7 +502,7 @@ img {
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translate3d(0, 12px, 0);
+    transform: translate3d(0, 14px, 0);
   }
   to {
     opacity: 1;
@@ -274,6 +546,23 @@ img {
     background-position: 0% 100%;
   }
   100% {
+    background-size: 100% 1px;
+    background-position: 0% 100%;
+  }
+}
+
+/* An underline that draws in from the left on hover and leaves to the right. */
+.link-draw {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 100% 100%;
+  background-repeat: no-repeat;
+  padding-bottom: 0.06em;
+  transition: background-size 0.6s var(--ease-out);
+}
+@media (hover: hover) {
+  .link-draw:hover,
+  .group:hover .link-draw {
     background-size: 100% 1px;
     background-position: 0% 100%;
   }
@@ -351,8 +640,15 @@ html.has-cursor [data-cursor] {
     scroll-behavior: auto;
   }
   .line-mask > span,
-  .fade-late {
+  .fade-late,
+  .glow::before,
+  .glow::after,
+  .pulse::after,
+  .marquee-row {
     animation: none;
+  }
+  .marquee-row[aria-hidden="true"] {
+    display: none;
   }
   *,
   *::before,

@@ -68,7 +68,7 @@ export function ProjectPanel({
   );
 
   const frame = cn(
-    "relative overflow-hidden rounded-[14px] border border-line bg-surface transition-colors duration-500 group-hover:border-line-strong",
+    "spot relative overflow-hidden rounded-[16px] border border-line bg-surface transition-colors duration-700 group-hover:border-line-strong",
     aspect[size],
   );
 

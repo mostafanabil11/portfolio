@@ -1,3 +1,4 @@
+import { Reveal } from "../reveal";
 import { cn } from "@/lib/cn";
 
 /**
@@ -29,7 +30,12 @@ export function CaseSection({
             {title}
           </h2>
         </div>
-        <div className={cn("col-span-12", !wide && "lg:col-span-8 lg:col-start-5")}>{children}</div>
+        {/* Screens reveal themselves one by one; everything else arrives as a block. */}
+        {wide ? (
+          <div className="col-span-12">{children}</div>
+        ) : (
+          <Reveal className="col-span-12 lg:col-span-8 lg:col-start-5">{children}</Reveal>
+        )}
       </div>
     </section>
   );
@@ -55,7 +61,7 @@ export function NoteGrid({ notes, className }: { notes: { title: string; text: s
       {notes.map((note, i) => (
         <li
           key={note.title}
-          className="rounded-[12px] border border-line bg-surface p-5 transition-colors duration-500 hover:border-line-strong md:p-6"
+          className="spot relative overflow-hidden rounded-[14px] border border-line bg-surface p-5 transition-colors duration-500 hover:border-line-strong md:p-6"
         >
           <span className="t-mono text-faint">{String(i + 1).padStart(2, "0")}</span>
           <h3 className="t-h3 mt-6">{note.title}</h3>
